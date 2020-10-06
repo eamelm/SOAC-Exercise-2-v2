@@ -22,44 +22,45 @@ from matplotlib import animation
 # INITIALIZATION
 # --------------------------------------------
 # Define domain:
-L = 2500 # [km]
-Dx = 25 # Gridsize [km]
-x = np.arange(0, L, Dx) # space array
+L = 2500    # [km]
+Dx = 25     # Gridsize [km]
+x = np.arange(0, L, Dx)     # space array
 
 # Define time array
-Dt = 0.1 # time step
-t = np.arange(0,100,Dt) # Time array
+Dt = 0.1    # time step
+t = np.arange(0, 100, Dt)   # Time array
 
 # Define initial concentration
 C = np.zeros((len(t), len(x)))
-C[0,46:55] = 1 # Initial concentration
+C[0, 46:55] = 1  # Initial concentration
 
 C_e = C     # Initial concentration for Euler forward scheme
 C_lw = C    # Initial concentration for Lax-Wendroff scheme
 C_s = C     # Initial concentration for Spectral method
 
 # Define initial wind speed
-u0 = 10 # Initial wind speed [m/s]
+u0 = 10     # Initial wind speed [m/s]
 
 # --------------------------------------------
 # (1) Euler forward in time and upwind in space
 # --------------------------------------------
-for nt in range(len(t)-1): # loop over time
-    for nx in range(1,len(x)):  # loop over space
-        C[nt+1, nx] = -u0*(C[nt,nx]-C[nt,nx-1])/ Dx * Dt+ C[nt,nx]
+for nt in range(len(t)-1):  # loop over time
+    for nx in range(1, len(x)):      # loop over space
+        C_e[nt+1, nx] = -u0 * (C_e[nt, nx]-C_e[nt, nx-1]) / Dx * Dt + C_e[nt, nx]
 
 # make animation
-fig=plt.figure(1)
-ax = plt.axes(xlim=(0,L), ylim=(0, 2))
-line, = ax.plot([], [], lw=2) # create object to store the data
+fig = plt.figure(1)
+ax = plt.axes(xlim=(0, L), ylim=(0, 2))
+line, = ax.plot([], [], lw=2)   # create object to store the data
 
-def init(): # function for initial frame (empty)
+
+def init():     # function for initial frame (empty)
     line.set_data([], [])
     return line,
 
 
-def anim(i): # function for the time evolution
-    line.set_data(x, C_e[i,:])
+def anim(i):    # function for the time evolution
+    line.set_data(x, C_e[i, :])
     return line,
 
 
@@ -71,9 +72,9 @@ animat = animation.FuncAnimation(fig, anim, init_func=init, interval=10, blit=Tr
 # (2) "Lax-Wendroff" scheme
 # --------------------------------------------
 for nt in range(len(t)-1):
-    for nx in range(1,len(x)-1):
-        C_lw[nt+1, nx] = (-u0*(C_lw[nt,nx+1]-C_lw[nt,nx-1])/ (2*Dx) + 
-        (u0**2 * Dt/2*(C_lw[nt,nx+1]-2*C_lw[nt,nx]+C_lw[nt,nx-1])/Dx**2)) * Dt+ C_lw[nt,nx]
+    for nx in range(1, len(x)-1):
+        C_lw[nt+1, nx] = (-u0*(C_lw[nt, nx+1]-C_lw[nt, nx-1]) / (2*Dx) +
+        (u0**2 * Dt/2*(C_lw[nt, nx+1]-2*C_lw[nt, nx]+C_lw[nt, nx-1])/Dx**2)) * Dt + C_lw[nt, nx]
 
 # Test test test
 Q = 200
