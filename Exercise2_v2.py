@@ -56,7 +56,6 @@ for nt in range(len(t)-1):
 # --------------------------------------------
 # (3) The spectral method
 # --------------------------------------------
-#hallo dit is een feature
 
 #%% animation
     
